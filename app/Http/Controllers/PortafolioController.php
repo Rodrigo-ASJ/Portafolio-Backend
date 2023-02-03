@@ -36,13 +36,19 @@ class PortafolioController extends Controller
 
            $proyecto = new Portafolio();
 
-           $proyecto->project_title = $request->project_title;
-           $proyecto->project_img = $request->project_img;
-           $proyecto->project_description = $request->project_description;
-           $proyecto->project_tech = $request->project_tech;
-           $proyecto->project_github = $request->project_github;
-           $proyecto->project_deployment = $request->project_deployment;
-           $proyecto->save();
+          //* añadir imagenes
+          if ($request->hasFile('project_img')) {
+            $path = $request->file('project_img')->store('images/featureds', 'public');
+            $proyecto->project_img  = $path;
+        } else {
+            $proyecto->project_img  = 'noFoto';
+        }
+       $proyecto->project_title = $request->project_title;
+       $proyecto->project_description = $request->project_description;
+       $proyecto->project_tech = $request->project_tech;
+       $proyecto->project_github = $request->project_github;
+       $proyecto->project_deployment = $request->project_deployment;
+       $proyecto->save();
 
         return $proyecto;
 
