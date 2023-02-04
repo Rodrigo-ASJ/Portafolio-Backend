@@ -27,7 +27,7 @@ class PortafolioController extends Controller
     {
         $request->validate([
         'project_title' => 'required',
-        'project_img' => 'required',
+        'project_img' => 'required|image|max:2048',
         'project_description'=> 'required',
         'project_tech' => 'required',
         'project_github' => 'required',
