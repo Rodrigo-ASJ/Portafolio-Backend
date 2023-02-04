@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Portafolio;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 
 class PortafolioController extends Controller
@@ -38,8 +39,20 @@ class PortafolioController extends Controller
 
           //* añadir imagenes
           if ($request->hasFile('project_img')) {
-            $path = $request->file('project_img')->store('images/featureds', 'public');
-            $proyecto->project_img  = $path;
+            //buscar la imagen en files
+            $imagen = $request->file('project_img');
+            //formatear el nombre de la imagen para no tener problemas de caracteres
+            $nombreImagen = Str::slug($request->project_title).".".$imagen->guessExtension();
+            //darle una ruta de almacenamiento
+            $ruta = public_path("images/featureds/");
+            //mover la imagen a la ruta
+            $imagen->move($ruta, $nombreImagen);
+            /* copy($imagen->getRealPath(), $ruta.$nombreImagen); */
+            //guardar en el modelo base de datos
+            $proyecto->project_img = $nombreImagen;
+
+           /*  $path = $request->file('project_img')->store('images/featureds', 'public');
+            $proyecto->project_img  = $path; */
         } else {
             $proyecto->project_img  = 'noFoto';
         }
