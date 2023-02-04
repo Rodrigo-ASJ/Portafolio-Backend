@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Portafolio;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Facades\Storage;
+use League\Flysystem\StorageAttributes;
+
 class PortafolioController extends Controller
 {
     /**
@@ -38,8 +41,9 @@ class PortafolioController extends Controller
 
             //* añadir imagenes
            if ($request->hasFile('project_img')) {
-                $path = $request->file('project_img')->store('images/featureds', 'public');
-                $proyecto->project_img  = $path;
+                $path = $request->file('project_img')->store('public/imagenes');
+                $url = Storage::url($path);
+                $proyecto->project_img  = $url;
             } else {
                 $proyecto->project_img  = 'noFoto';
             }
