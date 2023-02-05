@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Portafolio;
 use Illuminate\Http\Request;
+use App\Http\Requests\SaveProjectsRequest;
 
 class PortafolioController extends Controller
 {
@@ -23,32 +24,29 @@ class PortafolioController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(SaveProjectsRequest $request)
     {
-        $request->validate([
-        'project_title' => 'required',
-        'project_img' => 'required|image|max:2048',
-        'project_description'=> 'required',
-        'project_tech' => 'required',
-        'project_github' => 'required',
-        'project_deployment' => 'required',
-            ]);
+
 
            $proyecto = new Portafolio();
 
-            //* añadir imagenes
+            //* comprueba que la imagen se encuentra en file
            if ($request->hasFile('project_img')) {
+                //almacena la imagen en la dirección de la carpeta public
                 $path = $request->file('project_img')->store('images/featureds', 'public');
+                // guarda la información en la tabla
                 $proyecto->project_img  = $path;
             } else {
-                $proyecto->project_img  = 'noFoto';
+                $proyecto->project_img  = 'noImage';
             }
+
            $proyecto->project_title = $request->project_title;
            $proyecto->project_description = $request->project_description;
            $proyecto->project_tech = $request->project_tech;
            $proyecto->project_github = $request->project_github;
            $proyecto->project_deployment = $request->project_deployment;
-           $proyecto->save();
+
+           $proyecto->save($request->validated()); //! guardar y realizar validación
 
         return $proyecto;
 
@@ -62,6 +60,7 @@ class PortafolioController extends Controller
      */
     public function show(Portafolio $portafolio)
     {
+        // es igual a $proyecto = Portafolio::find($id);
         return $portafolio;
     }
 
@@ -72,16 +71,19 @@ class PortafolioController extends Controller
      * @param  \App\Models\Portafolio  $portafolio
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Portafolio $portafolio)
+    public function update(SaveProjectsRequest $request, Portafolio $portafolio)
     {
 
-               $portafolio->project_title = $request->project_title;
+            /* $portafolio->project_title = $request->project_title;
                $portafolio->project_img = $request->project_img;
                $portafolio->project_description = $request->project_description;
                $portafolio->project_tech = $request->project_tech;
                $portafolio->project_github = $request->project_github;
                $portafolio->project_deployment = $request->project_deployment;
-               $portafolio->update();
+               $portafolio->update(); */
+
+               //* pasamos la clase form request SaveProjectsRequest para validar
+               $portafolio->update($request->validated());
 
             return $portafolio;
     }
@@ -92,11 +94,12 @@ class PortafolioController extends Controller
      * @param  \App\Models\Portafolio  $portafolio
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Portafolio $portafolio)
+    public function destroy($id)
     {
+
+        $portafolio = Portafolio::find($id);
         if(is_null($portafolio)){
-            return response()->json('No se pudo realizar la petición,
-            el archivo ya no existe', 404);
+            return response()->json('No se pudo realizar la peticion, el archivo ya no existe o nunca existio', 404);
         }
 
         $portafolio->delete();
