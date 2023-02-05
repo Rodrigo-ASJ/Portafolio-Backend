@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Portafolio;
-use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
+use Illuminate\Http\Request;
+use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Storage;
-use League\Flysystem\StorageAttributes;
+
 
 class PortafolioController extends Controller
 {
@@ -40,13 +42,32 @@ class PortafolioController extends Controller
            $proyecto = new Portafolio();
 
             //* añadir imagenes
-           if ($request->hasFile('project_img')) {
+         /*   if ($request->hasFile('project_img')) {
                 $path = $request->file('project_img')->store('public/imagenes');
                 $url = Storage::url($path);
                 $proyecto->project_img  = $url;
             } else {
                 $proyecto->project_img  = 'noFoto';
-            }
+            } */
+
+            $nombre = Str::random(10) . $request->file('project_img')->getClientOriginalName();
+            $ruta = storage_path() . "\app\public\imagenes/" . $nombre;
+
+
+            Image::make($request->file('project_img'))
+            ->resize(1200, null, function($constraint) {
+                $constraint->aspectRatio();
+            })
+            ->save($ruta);
+
+
+            Portafolio::create([
+                'user_id' => auth()->user(),
+                'url' => '/storage/imagenes/'. $nombre
+
+            ]);
+
+
            $proyecto->project_title = $request->project_title;
            $proyecto->project_description = $request->project_description;
            $proyecto->project_tech = $request->project_tech;

@@ -15,6 +15,13 @@ return new class extends Migration
     {
         Schema::create('portafolios', function (Blueprint $table) {
             $table->id();
+
+            $table->unsignedBigInteger('user_id'); // almacenar id de las personas que suban la imagen
+            $table->foreign('user_id')
+                ->references('id')
+                ->on('users')
+                ->onDelete('cascade'); // llave foranea, referencia a la columna id, en la migracion users, borra todo los registros si se borra el usuario
+
             $table->string('project_title');
             $table->string('project_img');
             $table->longText('project_description');

@@ -16,6 +16,12 @@ class Portafolio extends Model
         "created_at",
         'project_github',
         'project_deployment',
+        'user_id',
         "updated_at"];
+
+/* Relacion uno a muchos inversa */
+public function user(){
+    return $this->belongsTo('App\Models\User');
+}
 
 }
