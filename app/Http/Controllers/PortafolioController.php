@@ -30,6 +30,7 @@ class PortafolioController extends Controller
 
            $proyecto = new Portafolio();
 
+
             //* comprueba que la imagen se encuentra en file
            if ($request->hasFile('project_img')) {
                 //almacena la imagen en la dirección de la carpeta public
@@ -39,7 +40,6 @@ class PortafolioController extends Controller
             } else {
                 $proyecto->project_img  = 'noImage';
             }
-
            $proyecto->project_title = $request->project_title;
            $proyecto->project_description = $request->project_description;
            $proyecto->project_tech = $request->project_tech;
