@@ -18,9 +18,9 @@ class PortafolioFactory extends Factory
     {
         return [
         //[
-            'project_title' => fake()->name(),
+            'project_title' => fake()->words(rand(3,5), true),
             'project_description' => fake()->text(),
-            'project_img' => fake()->url(),
+            'project_img' => fake()->image(),
             'project_tech' => fake()->name(),
             'project_github' => fake()->url(),
             'project_deployment' => fake()->url(),

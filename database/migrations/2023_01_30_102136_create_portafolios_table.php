@@ -20,7 +20,7 @@ return new class extends Migration
             $table->longText('project_description');
             $table->string('project_tech');
             $table->string('project_github');
-            $table->string('project_deployment');
+            $table->string('project_deployment')->unique();
             $table->timestamps();
         });
     }
